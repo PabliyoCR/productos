@@ -1,6 +1,5 @@
 faiss-cpu
 torch
-clip
 numpy
 Pillow
 Flask

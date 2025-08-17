@@ -21,9 +21,20 @@ def load_model():
 
 # Cargar modelo e índice solo una vez
 model, preprocess, device = load_model()
-index = faiss.read_index(INDEX_FILE)
+if device == "cuda":
+    print("Cargando índice FAISS en GPU...")
+    index = faiss.read_index(INDEX_FILE)
+    index = faiss.index_gpu_to_cpu(index) # Mover a CPU para evitar problemas de compatibilidad o si solo la búsqueda se hace en GPU
+    # Para usar FAISS en GPU directamente, necesitarías un IndexFlatGPU o similar
+    # y transferir el índice a la GPU después de cargarlo.
+    # Por simplicidad, lo cargamos en CPU y luego podríamos moverlo si fuera necesario.
+else:
+    print("Cargando índice FAISS en CPU...")
+    index = faiss.read_index(INDEX_FILE)
 mapping = np.load(MAP_FILE, allow_pickle=True)
 
+# Considerar usar un modelo CLIP más pequeño (ej. "ViT-B/16" o un modelo cuantificado)
+    # si los problemas de memoria persisten, o si se despliega en un entorno con recursos limitados.
 def buscar_producto(imagen_path, top_k=100):
     img = Image.open(imagen_path).convert("RGB")
     img_tensor = preprocess(img).unsqueeze(0).to(device)
