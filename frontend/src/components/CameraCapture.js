@@ -66,7 +66,7 @@ const CameraCapture = () => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch("https://productos-backend.grayplant-a8943a6b.eastus.azurecontainerapps.io/buscar-producto", {
+      const res = await fetch("http://localhost:8000/buscar-producto", {
         method: "POST",
         body: formData,
       });
